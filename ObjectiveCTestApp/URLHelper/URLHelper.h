@@ -14,6 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSURL *)URLForQuery:(NSString *)query;
 + (NSURL *)URLPocemonsNames;
 + (NSURL *)URLPocemonsImages:(NSString *)pocemonsName;
++ (void)fetchPocemonsList:(void(^)(NSArray *list))competion;
++ (NSMutableArray *)fetchPocemonsImages:(NSString *)pocemonsName :(void(^)(BOOL result))completion;
++ (void)asyncLoadImages:(NSMutableArray *)array :(void(^)(NSMutableArray * result))completion;
++ (void)startLoadImage:(NSString *)urlString :(void(^)(UIImage * image))completion;
 
 @end
 

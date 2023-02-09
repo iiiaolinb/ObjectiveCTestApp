@@ -17,46 +17,23 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self fetchPocemons];
+    [URLHelper fetchPocemonsList:^(NSArray * list) {
+        self.pocemons = list;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }];
     
     [self setTitle:@"Pocemons"];
-}
-
--(IBAction)fetchPocemons{
-    
-    NSURL *url = [URLHelper URLPocemonsNames];
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSURLSessionDownloadTask *task = [session downloadTaskWithURL:url
-                                                completionHandler:
-        ^(NSURL *location, NSURLResponse *response, NSError *error) {
-        
-              if (!error) {
-                  NSData *jsonResults = [NSData dataWithContentsOfURL:url];
-                  NSDictionary *results = [NSJSONSerialization JSONObjectWithData:jsonResults
-                                                                          options:0
-                                                                            error:NULL];
-                  NSArray *places = [results valueForKeyPath:@"results"];
-                  NSArray *pocemons = [places valueForKey:@"name"];
-                  self.pocemons = pocemons;
-              } else {
-                  NSLog(@"Error fetching pocemons");
-              }
-              dispatch_async(dispatch_get_main_queue(), ^{
-                  self.tableView.reloadData;
-              });
-            }];
-    [task resume];
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {    
     return self.pocemons.count;
 }
 

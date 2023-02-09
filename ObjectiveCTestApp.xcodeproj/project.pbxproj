@@ -113,6 +113,7 @@
 				744D6EAD2982B9AF00D7DC6C /* TableVC */,
 				744D6EAC2982B99900D7DC6C /* CollectionVC */,
 				744D6EB82983C2E000D7DC6C /* ImageViewer */,
+				74FF86742993CD8B00914548 /* URLHelper */,
 				7467CD4629826EA100FFB61F /* AppDelegate.h */,
 				7467CD4729826EA100FFB61F /* AppDelegate.m */,
 				7467CD4929826EA100FFB61F /* SceneDelegate.h */,
@@ -122,10 +123,17 @@
 				7467CD5429826EA900FFB61F /* LaunchScreen.storyboard */,
 				7467CD5729826EA900FFB61F /* Info.plist */,
 				7467CD5829826EA900FFB61F /* main.m */,
+			);
+			path = ObjectiveCTestApp;
+			sourceTree = "<group>";
+		};
+		74FF86742993CD8B00914548 /* URLHelper */ = {
+			isa = PBXGroup;
+			children = (
 				744D6EBC2983C71900D7DC6C /* URLHelper.h */,
 				744D6EBD2983C71A00D7DC6C /* URLHelper.m */,
 			);
-			path = ObjectiveCTestApp;
+			path = URLHelper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

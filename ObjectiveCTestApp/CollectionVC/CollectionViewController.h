@@ -9,14 +9,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CollectionViewController : UICollectionViewController <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface CollectionViewController : UICollectionViewController <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic,strong) NSString *pocemonsName;
 @property (nonatomic,strong) NSMutableArray *images;
 @property (nonatomic,strong) NSMutableArray *array;
 
-- (void)setPocemon:(NSString *)pocemonsName;
--(void)asyncLoadImages;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+
+-(void)setPocemon:(NSString *)pocemonsName;
 
 @end
 
