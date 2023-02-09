@@ -24,26 +24,30 @@
     return  [self URLForQuery:pocemonsName];
 }
 
-+ (void)fetchPocemonsList:(void(^)(NSArray  * _Nullable list))competion {
++ (void)fetchPocemonsList:(void(^_Nullable)(NSArray  * _Nullable list))competion {
     NSURL *url = [URLHelper URLPocemonsNames];
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDownloadTask *task = [session downloadTaskWithURL:url
                                                 completionHandler:
         ^(NSURL *location, NSURLResponse *response, NSError *error) {
-        
-              if (!error) {
-                  NSLog(@"NOT ERROR%@", response);
-                  NSData *jsonResults = [NSData dataWithContentsOfURL:url];
-                  NSDictionary *results = [NSJSONSerialization JSONObjectWithData:jsonResults
-                                                                          options:0
-                                                                            error:NULL];
+
+            if (!error) {
+                NSError *error = nil;
+                NSData *jsonResults = [NSData dataWithContentsOfURL:url];
+                if (jsonResults) {
+                    NSDictionary *results = [NSJSONSerialization JSONObjectWithData:jsonResults
+                                                                          options:NSJSONReadingMutableContainers
+                                                                            error:&error];
                   NSArray *places = [results valueForKeyPath:@"results"];
                   NSArray *pocemons = [places valueForKey:@"name"];
+
                   competion(pocemons);
               } else {
                   NSLog(@"Error fetching pocemons");
+                  competion(nil);
               }
-            }];
+            }
+        }];
     [task resume];
 }
 

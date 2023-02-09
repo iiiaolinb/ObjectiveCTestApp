@@ -17,14 +17,37 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [URLHelper fetchPocemonsList:^(NSArray * list) {
+    [URLHelper fetchPocemonsList:^(NSArray * _Nullable list) {
         self.pocemons = list;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
+            if (self.pocemons.count != 0) {
+                NSLog(@"NOT WORK");
+                [self.tableView reloadData];
+            } else {
+                NSLog(@"WORK");
+                [self showAlertController];
+            }
         });
     }];
     
     [self setTitle:@"Pocemons"];
+}
+
+- (void)showAlertController {
+    UIAlertController * alert = [UIAlertController
+                                     alertControllerWithTitle:@"Oooops"
+                                     message:@"Check your connection!"
+                                     preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction* okButton = [UIAlertAction
+                                    actionWithTitle:@"Ok"
+                                    style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * action) {
+        
+                                    }];
+    [alert addAction:okButton];
+
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - Table view data source
@@ -33,7 +56,7 @@
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {    
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.pocemons.count;
 }
 

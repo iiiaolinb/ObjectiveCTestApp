@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ImageViewerVC : UIViewController
 
-@property (nonatomic, strong) UIImage *image;
+@property (nonatomic) UIImage *image;
 
 -(void)setImage:(UIImage *)transmittedImage;
 
