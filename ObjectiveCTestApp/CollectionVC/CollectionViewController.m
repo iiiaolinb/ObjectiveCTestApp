@@ -21,10 +21,10 @@ static NSString * const reuseIdentifier = @"CollectionViewCell";
     self.activityIndicator.hidesWhenStopped = true;
 }
 
-- (void)setPocemon:(NSString *)pocemonsName
+- (void)setPocemon:(NSString *)pocemonsName :(NSString *)tagOrText
 {
     _pocemonsName = pocemonsName;
-    self.images = [URLHelper fetchPocemonsImages:_pocemonsName :^(BOOL result) {
+    self.images = [URLHelper fetchPocemonsImages:_pocemonsName :tagOrText :^(BOOL result) {
         if (result) {
             [self.activityIndicator stopAnimating];
             [self.collectionView reloadData];

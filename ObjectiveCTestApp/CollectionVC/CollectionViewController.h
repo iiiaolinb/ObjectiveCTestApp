@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
--(void)setPocemon:(NSString *)pocemonsName;
+-(void)setPocemon:(NSString *)pocemonsName :(NSString *)tagOrText;
 
 @end
 

@@ -9,9 +9,11 @@
 
 //NS_ASSUME_NONNULL_BEGIN
 
-@interface TableViewController : UITableViewController
+@interface TableViewController : UITableViewController <UISearchBarDelegate>
 
+@property (weak, nonatomic) IBOutlet UISearchBar * _Nullable searchBar;
 @property (nonatomic, nullable) NSArray * pocemons;
+@property (nonatomic, nullable) NSArray * searchTag;
 
 - (void)showAlertController;
 
