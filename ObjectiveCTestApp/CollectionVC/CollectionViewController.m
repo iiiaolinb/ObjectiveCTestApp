@@ -19,12 +19,18 @@ static NSString * const reuseIdentifier = @"CollectionViewCell";
     [super viewDidLoad];
     [self.activityIndicator startAnimating];
     self.activityIndicator.hidesWhenStopped = true;
+    
 }
 
-- (void)setPocemon:(NSString *)pocemonsName :(NSString *)tagOrText
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:true];
+    self.navigationController.navigationBar.backgroundColor = UIColor.whiteColor;
+}
+
+- (void)setPocemon:(NSString *)pocemonsName
 {
     _pocemonsName = pocemonsName;
-    self.images = [URLHelper fetchPocemonsImages:_pocemonsName :tagOrText :^(BOOL result) {
+    self.images = [URLHelper fetchPocemonsImages:_pocemonsName :^(BOOL result) {
         if (result) {
             [self.activityIndicator stopAnimating];
             [self.collectionView reloadData];
@@ -43,7 +49,7 @@ static NSString * const reuseIdentifier = @"CollectionViewCell";
         if (indexPath) {
             if ([segue.identifier isEqualToString:@"OnePocemonsImage"]) {
                 if ([segue.destinationViewController isKindOfClass:[ImageViewerVC class]]) {
-                    [segue.destinationViewController setImage:[[sender imageView] image]];
+                    [segue.destinationViewController transferImages:images :indexPath.row];
                 }
             }
         }

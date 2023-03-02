@@ -31,6 +31,12 @@
     }];
     
     [self setTitle:@"Top tags"];
+    self.navigationController.navigationBar.backgroundColor = UIColor.whiteColor;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:true];
+    self.navigationController.navigationBar.backgroundColor = UIColor.whiteColor;
 }
 
 - (void)showAlertController {
@@ -99,7 +105,7 @@
             if ([segue.identifier isEqualToString:@"PocemonsImages"]) {
                 if ([segue.destinationViewController isKindOfClass:[CollectionViewController class]]) {
                     
-                    [segue.destinationViewController setPocemon:[[sender textLabel] text] : @"tags="];
+                    [segue.destinationViewController setPocemon:[[sender textLabel] text]];
                     [segue.destinationViewController setTitle:[[sender textLabel] text]];
                     
                 }

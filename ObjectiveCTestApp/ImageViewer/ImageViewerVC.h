@@ -7,13 +7,18 @@
 
 #import <UIKit/UIKit.h>
 
+#define kMinimumGestureLength  70
+
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ImageViewerVC : UIViewController
+@interface ImageViewerVC : UIViewController {
+    CGPoint gestureStartPoint;
+}
 
-@property (nonatomic) UIImage *image;
+@property (nonatomic) NSMutableArray *images;
+@property (nonatomic) long indexPath;
 
--(void)setImage:(UIImage *)transmittedImage;
+-(void)transferImages:(NSMutableArray *)transmitedImages :(long)selectedIndexPath;
 
 @end
 

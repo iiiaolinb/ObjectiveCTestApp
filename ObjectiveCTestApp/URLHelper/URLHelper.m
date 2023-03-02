@@ -19,9 +19,8 @@
     return [self URLForQuery:@"https://www.flickr.com/services/rest/?method=flickr.tags.getHotList&api_key=eab35027935d7a4ac21f4e882a000446&count=100&format=json&nojsoncallback=1"];
 }
 
-+ (NSURL *)URLPocemonsImages:(NSString *)pocemonsName :(NSString *)tagOrText {
-    pocemonsName = [NSString stringWithFormat:@"https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=eab35027935d7a4ac21f4e882a000446&%@", tagOrText];
-    pocemonsName = [pocemonsName stringByAppendingString:pocemonsName];
++ (NSURL *)URLPocemonsImages:(NSString *)pocemonsName {
+    pocemonsName = [NSString stringWithFormat:@"https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=eab35027935d7a4ac21f4e882a000446&tags=%@", pocemonsName];
     //tags=
     pocemonsName = [pocemonsName stringByAppendingString:@"&extras=url_s%2C+url_l&per_page=10&page=1&format=json&nojsoncallback=1"];
     return  [self URLForQuery:pocemonsName];
@@ -59,10 +58,10 @@
     [task resume];
 }
 
-+ (NSMutableArray *)fetchPocemonsImages:(NSString *)pocemonsName :(NSString *)tagOrText :(void(^)(BOOL result))completion {
++ (NSMutableArray *)fetchPocemonsImages:(NSString *)pocemonsName :(void(^)(BOOL result))completion {
     NSMutableArray *arrayOfURLStrings = NSMutableArray.new;
     NSMutableArray *arrayOfImages = NSMutableArray.new;
-    NSURL *url = [URLHelper URLPocemonsImages:pocemonsName :tagOrText];
+    NSURL *url = [URLHelper URLPocemonsImages:pocemonsName];
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDownloadTask *task = [session downloadTaskWithURL:url
                                                 completionHandler:

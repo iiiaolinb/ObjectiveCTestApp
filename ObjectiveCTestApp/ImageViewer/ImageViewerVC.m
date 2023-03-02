@@ -16,17 +16,39 @@
 
 @implementation ImageViewerVC
 
-@synthesize image;
+@synthesize images, indexPath;
 
 -(void)viewDidLoad
 {
     [super viewDidLoad];
-    self.imageView.image = image;
+    self.imageView.image = images[indexPath];
+    self.navigationController.navigationBar.backgroundColor = UIColor.blackColor;
 }
 
--(void)setImage:(UIImage *)transmittedImage
+-(void)transferImages:(NSMutableArray *)transmitedImages :(long)selectedIndexPath
 {
-    image = transmittedImage;
+    images = transmitedImages;
+    indexPath = selectedIndexPath;
+}
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+        UITouch *touch = [touches anyObject];
+        gestureStartPoint = [touch locationInView:self.view];
+  }
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    CGPoint currentPosition = [touch locationInView:self.view];
+
+    CGFloat deltaX = gestureStartPoint.x - currentPosition.x;
+
+    if (deltaX >= kMinimumGestureLength && (images.count - 1) > indexPath) {
+        indexPath += 1;
+        self.imageView.image = images[indexPath];
+    } else if (deltaX <= -kMinimumGestureLength && indexPath > 0) {
+        indexPath -= 1;
+        self.imageView.image = images[indexPath];
+    }
 }
 
 @end
