@@ -9,15 +9,21 @@
 #import "CollectionViewController.h"
 #import "URLHelper.h"
 
-@interface TableViewController ()
-
-@end
+//@interface TableViewController ()
+//
+//@end
 
 @implementation TableViewController
+
+//@synthesize presenter;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.searchBar.delegate = self;
+    
+    self.presenter = [[TableVCPresenterImpl alloc] init];
+    [self.presenter initWithView:self];
+
     [URLHelper fetchPocemonsList:^(NSArray * _Nullable list) {
         self.pocemons = list;
         self.searchTag = list;
@@ -25,7 +31,7 @@
             if (self.pocemons.count != 0) {
                 [self.tableView reloadData];
             } else {
-                [self showAlertController];
+                [self.presenter showAlertController:self];
             }
         });
     }];
@@ -39,22 +45,9 @@
     self.navigationController.navigationBar.backgroundColor = UIColor.whiteColor;
 }
 
-- (void)showAlertController {
-    UIAlertController * alert = [UIAlertController
-                                     alertControllerWithTitle:@"Oooops"
-                                     message:@"Check your connection!"
-                                     preferredStyle:UIAlertControllerStyleAlert];
-
-    UIAlertAction* okButton = [UIAlertAction
-                                    actionWithTitle:@"Ok"
-                                    style:UIAlertActionStyleDefault
-                                    handler:^(UIAlertAction * action) {
-        
-                                    }];
-    [alert addAction:okButton];
-
-    [self presentViewController:alert animated:YES completion:nil];
-}
+//- (void)showAlertController {
+//    [self.presenter showAlertController];
+//}
 
 #pragma mark - SearchBar delegate func
 

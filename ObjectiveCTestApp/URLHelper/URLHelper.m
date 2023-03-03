@@ -53,6 +53,9 @@
                   NSLog(@"Error fetching pocemons");
                   competion(nil);
               }
+            } else {
+                NSLog(@"Error connection");
+                competion(nil);
             }
         }];
     [task resume];

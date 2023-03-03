@@ -6,16 +6,19 @@
 //
 
 #import "UIKit/UIKit.h"
+#import "TableVCPresenter.h"
 
 //NS_ASSUME_NONNULL_BEGIN
 
-@interface TableViewController : UITableViewController <UISearchBarDelegate>
+@interface TableViewController : UITableViewController <TableVCProtocol, UISearchBarDelegate>
 
 @property (weak, nonatomic) IBOutlet UISearchBar * _Nullable searchBar;
 @property (nonatomic, nullable) NSArray * pocemons;
 @property (nonatomic, nullable) NSArray * searchTag;
 
-- (void)showAlertController;
+@property (nullable) TableVCPresenterImpl *presenter;
+
+//- (void)showAlertController;
 
 @end
 
