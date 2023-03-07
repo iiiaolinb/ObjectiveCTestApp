@@ -6,13 +6,37 @@
 //
 
 #import "TableVCPresenter.h"
+#import "CollectionViewController.h"
+#import "CollectionVCPresenter.h"
+#import "TableVCModel.h"
 
-@implementation TableVCPresenterImpl
+@implementation TableVCPresenter
 
 @synthesize view;
+//@synthesize model;
 
-- (void)initWithView:(id<TableVCProtocol>)view {
+- (void)initWithView:(UITableViewController *)view {
     self.view = view;
+}
+
+- (void)createDataModel:(void(^_Nullable)(NSMutableArray  * _Nullable content))competion {
+//    TableVCModel *model;
+//    self.model = model;
+    
+    [TableVCModel createDataModel:^(NSMutableArray * _Nullable content) {
+        //model.content = content;
+        //NSLog(@"CONTENT - %lu", (unsigned long)model.content.count);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (content.count != 0) {
+                //NSLog(@"CONTENT - %lu", (unsigned long)content.count);
+                [self.view.tableView reloadData];
+            } else {
+                //NSLog(@"SHOW");
+                [self showAlertController:self.view];
+            }
+        });
+        competion(content);
+    }];
 }
 
 - (void) showAlertController: (UITableViewController *)vc; {
@@ -32,8 +56,38 @@
     [vc presentViewController:alert animated:YES completion:nil];
 }
 
+- (void)searchTag:(NSString *)searchText inList:(NSMutableArray *)array :(void(^)(NSMutableArray *result))completion {
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        NSMutableArray *newArray = NSMutableArray.new;
+        for (NSString *tag in array) {
+            if ([tag containsString:[searchText lowercaseString]]) {
+                [newArray addObject:tag];
+            }
+        }
+        if (searchText.length!=0) {
+            completion(newArray);
+        } else {
+            completion(array);
+        }
+    });
+}
 
-
-
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([sender isKindOfClass:[UITableViewCell class]]) {
+        NSIndexPath *indexPath = [self.view.tableView indexPathForCell:sender];
+        if (indexPath) {
+            if ([segue.identifier isEqualToString:@"PocemonsImages"]) {
+                if ([segue.destinationViewController isKindOfClass:[CollectionViewController class]]) {
+                    
+                    [segue.destinationViewController setPocemon:[[sender textLabel] text]];
+                    [segue.destinationViewController setTitle:[[sender textLabel] text]];
+                    
+                }
+            }
+        }
+    }
+}
 
 @end

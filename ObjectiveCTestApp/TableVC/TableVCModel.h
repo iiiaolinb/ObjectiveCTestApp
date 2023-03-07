@@ -7,10 +7,10 @@
 
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface TableVCModel : NSObject
 
-@end
+//@property (nonatomic, retain) NSMutableArray * _Nullable content;
 
-NS_ASSUME_NONNULL_END
++(void)createDataModel:(void(^_Nullable)(NSMutableArray  * _Nullable content))competion;
+
+@end

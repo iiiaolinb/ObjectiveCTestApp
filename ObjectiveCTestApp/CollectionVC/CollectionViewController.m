@@ -9,6 +9,7 @@
 #import "CollectionViewCell/CollectionViewCell.h"
 #import "ImageViewerVC.h"
 #import "URLHelper.h"
+#import "CollectionVCPresenter.h"
 
 @implementation CollectionViewController
 
@@ -17,9 +18,9 @@ static NSString * const reuseIdentifier = @"CollectionViewCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     [self.activityIndicator startAnimating];
     self.activityIndicator.hidesWhenStopped = true;
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -29,31 +30,29 @@ static NSString * const reuseIdentifier = @"CollectionViewCell";
 
 - (void)setPocemon:(NSString *)pocemonsName
 {
-    _pocemonsName = pocemonsName;
-    self.images = [URLHelper fetchPocemonsImages:_pocemonsName :^(BOOL result) {
-        if (result) {
-            [self.activityIndicator stopAnimating];
-            [self.collectionView reloadData];
-        } else {
-            NSLog(@"Error loading images");
-        }
+    self.presenter = [[CollectionVCPresenter alloc] init];
+    [self.presenter initWithView:self];
+    
+    [self.presenter setPocemons:pocemonsName :^(NSMutableArray *result) {
+        self->images = result;
     }];
+}
+
+#pragma mark - CollectionVCPresenterOutput
+
+- (void)reloadCollectionView {
+    [self.collectionView reloadData];
+}
+
+- (void)stopAnimatingActivityIndicator {
+    [self.activityIndicator stopAnimating];
 }
 
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([sender isKindOfClass:[UICollectionViewCell class]]) {
-        NSIndexPath *indexPath =[self.collectionView indexPathForCell:sender];
-        if (indexPath) {
-            if ([segue.identifier isEqualToString:@"OnePocemonsImage"]) {
-                if ([segue.destinationViewController isKindOfClass:[ImageViewerVC class]]) {
-                    [segue.destinationViewController transferImages:images :indexPath.row];
-                }
-            }
-        }
-    }
+    [self.presenter prepareForSegue:segue sender:sender withImages:self.images];
 }
 
 #pragma mark <UICollectionViewDataSource>

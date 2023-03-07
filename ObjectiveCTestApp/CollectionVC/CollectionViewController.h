@@ -6,10 +6,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CollectionVCPresenterInput.h"
+#import "CollectionVCPresenterOutput.h"
+
+@interface CollectionViewController : UICollectionViewController <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, CollectionVCPresenterOutput>
+
+@property _Nullable id <CollectionVCPresenterInput> presenter;
 
 NS_ASSUME_NONNULL_BEGIN
-
-@interface CollectionViewController : UICollectionViewController <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) NSString *pocemonsName;
 @property (nonatomic) NSMutableArray *images;

@@ -53,6 +53,10 @@
 		7477729729B1DE99001783A8 /* CollectionVCPresenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CollectionVCPresenter.m; sourceTree = "<group>"; };
 		7477729929B1DEAB001783A8 /* CollectionVCModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionVCModel.h; sourceTree = "<group>"; };
 		7477729A29B1DEAB001783A8 /* CollectionVCModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CollectionVCModel.m; sourceTree = "<group>"; };
+		7477729E29B5BEBB001783A8 /* TableVCPresenterOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableVCPresenterOutput.h; sourceTree = "<group>"; };
+		7477729F29B5BEFF001783A8 /* TableVCPresenterInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableVCPresenterInput.h; sourceTree = "<group>"; };
+		747772A029B5D2AC001783A8 /* CollectionVCPresenterOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionVCPresenterOutput.h; sourceTree = "<group>"; };
+		747772A129B5D2BD001783A8 /* CollectionVCPresenterInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionVCPresenterInput.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +80,8 @@
 				7477729729B1DE99001783A8 /* CollectionVCPresenter.m */,
 				7477729929B1DEAB001783A8 /* CollectionVCModel.h */,
 				7477729A29B1DEAB001783A8 /* CollectionVCModel.m */,
+				747772A029B5D2AC001783A8 /* CollectionVCPresenterOutput.h */,
+				747772A129B5D2BD001783A8 /* CollectionVCPresenterInput.h */,
 			);
 			path = CollectionVC;
 			sourceTree = "<group>";
@@ -83,12 +89,14 @@
 		744D6EAD2982B9AF00D7DC6C /* TableVC */ = {
 			isa = PBXGroup;
 			children = (
+				7477729329B1DE7F001783A8 /* TableVCModel.h */,
+				7477729429B1DE7F001783A8 /* TableVCModel.m */,
 				744D6EA62982B64E00D7DC6C /* TableViewController.h */,
 				744D6EA72982B64E00D7DC6C /* TableViewController.m */,
 				7477729029B1DE5E001783A8 /* TableVCPresenter.h */,
 				7477729129B1DE5E001783A8 /* TableVCPresenter.m */,
-				7477729329B1DE7F001783A8 /* TableVCModel.h */,
-				7477729429B1DE7F001783A8 /* TableVCModel.m */,
+				7477729E29B5BEBB001783A8 /* TableVCPresenterOutput.h */,
+				7477729F29B5BEFF001783A8 /* TableVCPresenterInput.h */,
 			);
 			path = TableVC;
 			sourceTree = "<group>";

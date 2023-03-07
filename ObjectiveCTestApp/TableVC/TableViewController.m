@@ -8,32 +8,20 @@
 #import "TableViewController.h"
 #import "CollectionViewController.h"
 #import "URLHelper.h"
-
-//@interface TableViewController ()
-//
-//@end
+#import "TableVCPresenter.h"
 
 @implementation TableViewController
-
-//@synthesize presenter;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.searchBar.delegate = self;
     
-    self.presenter = [[TableVCPresenterImpl alloc] init];
+    self.presenter = [[TableVCPresenter alloc] init];
     [self.presenter initWithView:self];
-
-    [URLHelper fetchPocemonsList:^(NSArray * _Nullable list) {
-        self.pocemons = list;
-        self.searchTag = list;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (self.pocemons.count != 0) {
-                [self.tableView reloadData];
-            } else {
-                [self.presenter showAlertController:self];
-            }
-        });
+    
+    [self.presenter createDataModel:^(NSMutableArray * _Nullable content) {
+        self.searchTag = content;
+        self.pocemons = content;
     }];
     
     [self setTitle:@"Top tags"];
@@ -45,29 +33,18 @@
     self.navigationController.navigationBar.backgroundColor = UIColor.whiteColor;
 }
 
-//- (void)showAlertController {
-//    [self.presenter showAlertController];
-//}
+#pragma mark - TableVCPresenterOutput
+
+
 
 #pragma mark - SearchBar delegate func
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        NSMutableArray *newArray = NSMutableArray.new;
-        for (NSString *tag in self.pocemons) {
-            if ([tag isEqual:[searchText lowercaseString]]) {
-                [newArray addObject:tag];
-            }
-        }
-        if (searchText.length!=0) {
-            self.searchTag = newArray;
-            [self.tableView reloadData];
-        } else {
-            self.searchTag = self.pocemons;
-            [self.tableView reloadData];
-        }
-    });
+    
+    [self.presenter searchTag:searchText inList:self.pocemons :^(NSMutableArray * _Nullable result) {
+        self.searchTag = result;
+        [self.tableView reloadData];
+    }];
 }
 
 #pragma mark - Table view data source
@@ -92,19 +69,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([sender isKindOfClass:[UITableViewCell class]]) {
-        NSIndexPath *indexPath =[self.tableView indexPathForCell:sender];
-        if (indexPath) {
-            if ([segue.identifier isEqualToString:@"PocemonsImages"]) {
-                if ([segue.destinationViewController isKindOfClass:[CollectionViewController class]]) {
-                    
-                    [segue.destinationViewController setPocemon:[[sender textLabel] text]];
-                    [segue.destinationViewController setTitle:[[sender textLabel] text]];
-                    
-                }
-            }
-        }
-    }
+    [self.presenter prepareForSegue:segue sender:sender];
 }
 
 @end

@@ -6,20 +6,15 @@
 //
 
 #import "UIKit/UIKit.h"
-#import "TableVCPresenter.h"
+#import "TableVCPresenterInput.h"
+#import "TableVCPresenterOutput.h"
 
-//NS_ASSUME_NONNULL_BEGIN
-
-@interface TableViewController : UITableViewController <TableVCProtocol, UISearchBarDelegate>
+@interface TableViewController : UITableViewController <UISearchBarDelegate, TableVCPresenterOutput>
 
 @property (weak, nonatomic) IBOutlet UISearchBar * _Nullable searchBar;
-@property (nonatomic, nullable) NSArray * pocemons;
-@property (nonatomic, nullable) NSArray * searchTag;
+@property (nonatomic, nullable) NSMutableArray * pocemons;
+@property (nonatomic, nullable) NSMutableArray * searchTag;
 
-@property (nullable) TableVCPresenterImpl *presenter;
-
-//- (void)showAlertController;
+@property _Nullable id <TableVCPresenterInput> presenter;
 
 @end
-
-//NS_ASSUME_NONNULL_END

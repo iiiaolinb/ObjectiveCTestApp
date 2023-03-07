@@ -21,12 +21,11 @@
 
 + (NSURL *)URLPocemonsImages:(NSString *)pocemonsName {
     pocemonsName = [NSString stringWithFormat:@"https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=eab35027935d7a4ac21f4e882a000446&tags=%@", pocemonsName];
-    //tags=
     pocemonsName = [pocemonsName stringByAppendingString:@"&extras=url_s%2C+url_l&per_page=10&page=1&format=json&nojsoncallback=1"];
     return  [self URLForQuery:pocemonsName];
 }
 
-+ (void)fetchPocemonsList:(void(^_Nullable)(NSArray  * _Nullable list))competion {
++ (void)fetchPocemonsList:(void(^_Nullable)(NSMutableArray  * _Nullable list))competion {
     NSURL *url = [URLHelper URLPocemonsNames];
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDownloadTask *task = [session downloadTaskWithURL:url
@@ -38,8 +37,8 @@
                 NSData *jsonResults = [NSData dataWithContentsOfURL:url];
                 if (jsonResults) {
                     NSDictionary *results = [NSJSONSerialization JSONObjectWithData:jsonResults
-                                                                          options:NSJSONReadingMutableContainers
-                                                                            error:&error];
+                                                                            options:NSJSONReadingMutableContainers
+                                                                              error:&error];
                     NSMutableArray *array = NSMutableArray.new;
                     NSDictionary *places = results[@"hottags"];
                     NSArray *pocemons = places[@"tag"];
@@ -61,7 +60,7 @@
     [task resume];
 }
 
-+ (NSMutableArray *)fetchPocemonsImages:(NSString *)pocemonsName :(void(^)(BOOL result))completion {
++ (void)fetchPocemonsImages:(NSString *)pocemonsName :(void(^)(NSMutableArray * result))completion {
     NSMutableArray *arrayOfURLStrings = NSMutableArray.new;
     NSMutableArray *arrayOfImages = NSMutableArray.new;
     NSURL *url = [URLHelper URLPocemonsImages:pocemonsName];
@@ -77,7 +76,7 @@
                                                                                 error:NULL];
                       //NSMutableArray *finalArray = NSMutableArray.new;
                       NSDictionary *images = results[@"photos"];
-                      NSArray *arrayOfImage = images[@"photo"];
+                      NSMutableArray *arrayOfImage = images[@"photo"];
                       for (NSDictionary *temp in arrayOfImage){
                           NSString *url_s = temp[@"url_s"];
                           if (url_s!=nil) {
@@ -89,18 +88,18 @@
 
                     [self asyncLoadImages:arrayOfURLStrings :^(NSMutableArray *result) {
                         [arrayOfImages addObjectsFromArray:result];
-                        if (arrayOfImages.count != 0) {
-                            completion(true);
-                        } else {
-                            completion(false);
-                        }
+                        completion(arrayOfImages);
+//                        if (arrayOfImages.count != 0) {
+//                            completion(arrayOfImages);
+//                        } else {
+//                            completion(false);
+//                        }
                     }];
                   }
     }];
     [task resume];
 
-    return arrayOfImages;
-        
+    //return arrayOfImages;
 }
 
 +(void)asyncLoadImages:(NSMutableArray *)array :(void(^)(NSMutableArray *result))completion {
