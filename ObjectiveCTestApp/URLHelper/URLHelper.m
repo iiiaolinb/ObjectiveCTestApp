@@ -7,6 +7,11 @@
 
 #import "UIKit/UIKit.h"
 #import "URLHelper.h"
+#import "ModelBuilder.h"
+
+#define QUERY "https://www.flickr.com/services/rest/?method=flickr.tags.getHotList&api_key=eab35027935d7a4ac21f4e882a000446&count=100&format=json&nojsoncallback=1"
+#define FIRST_PART_OF_POCEMONS_IMAGES "https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=eab35027935d7a4ac21f4e882a000446&tags="
+#define END_OF_POCEMONS_IMAGES "&extras=url_s%2C+url_l&per_page=10&page=1&format=json&nojsoncallback=1"
 
 @implementation URLHelper
 
@@ -16,12 +21,13 @@
 }
 
 + (NSURL *)URLPocemonsNames {
-    return [self URLForQuery:@"https://www.flickr.com/services/rest/?method=flickr.tags.getHotList&api_key=eab35027935d7a4ac21f4e882a000446&count=100&format=json&nojsoncallback=1"];
+    return [self URLForQuery:@QUERY];
 }
 
-+ (NSURL *)URLPocemonsImages:(NSString *)pocemonsName {
-    pocemonsName = [NSString stringWithFormat:@"https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=eab35027935d7a4ac21f4e882a000446&tags=%@", pocemonsName];
-    pocemonsName = [pocemonsName stringByAppendingString:@"&extras=url_s%2C+url_l&per_page=10&page=1&format=json&nojsoncallback=1"];
++ (NSURL *)URLPocemonsImages:(NSString *)name {
+    NSString *pocemonsName = [NSString stringWithFormat:@FIRST_PART_OF_POCEMONS_IMAGES];
+    pocemonsName = [pocemonsName stringByAppendingString:name];
+    pocemonsName = [pocemonsName stringByAppendingString:@END_OF_POCEMONS_IMAGES];
     return  [self URLForQuery:pocemonsName];
 }
 
@@ -33,35 +39,19 @@
         ^(NSURL *location, NSURLResponse *response, NSError *error) {
 
             if (!error) {
-                NSError *error = nil;
-                NSData *jsonResults = [NSData dataWithContentsOfURL:url];
-                if (jsonResults) {
-                    NSDictionary *results = [NSJSONSerialization JSONObjectWithData:jsonResults
-                                                                            options:NSJSONReadingMutableContainers
-                                                                              error:&error];
-                    NSMutableArray *array = NSMutableArray.new;
-                    NSDictionary *places = results[@"hottags"];
-                    NSArray *pocemons = places[@"tag"];
-                    for (NSDictionary *temp in pocemons){
-                        NSString *tag = temp[@"_content"];
-                        [array addObject:tag];
-                    }
-
-                    competion(array);
-              } else {
-                  NSLog(@"Error fetching pocemons");
-                  competion(nil);
-              }
+                [ModelBuilder buildPocemonsListModel:url :^(NSMutableArray * _Nullable list) {
+                    competion(list);
+                }];
             } else {
                 NSLog(@"Error connection");
                 competion(nil);
             }
+        
         }];
     [task resume];
 }
 
 + (void)fetchPocemonsImages:(NSString *)pocemonsName :(void(^)(NSMutableArray * result))completion {
-    NSMutableArray *arrayOfURLStrings = NSMutableArray.new;
     NSMutableArray *arrayOfImages = NSMutableArray.new;
     NSURL *url = [URLHelper URLPocemonsImages:pocemonsName];
     NSURLSession *session = [NSURLSession sharedSession];
@@ -70,36 +60,13 @@
               ^(NSURL *location, NSURLResponse *response, NSError *error) {
         
                   if (!error) {
-                      NSData *jsonResults = [NSData dataWithContentsOfURL:url];
-                      NSDictionary *results = [NSJSONSerialization JSONObjectWithData:jsonResults
-                                                                              options:0
-                                                                                error:NULL];
-                      //NSMutableArray *finalArray = NSMutableArray.new;
-                      NSDictionary *images = results[@"photos"];
-                      NSMutableArray *arrayOfImage = images[@"photo"];
-                      for (NSDictionary *temp in arrayOfImage){
-                          NSString *url_s = temp[@"url_s"];
-                          if (url_s!=nil) {
-                              [arrayOfURLStrings addObject:url_s];
-                          } else {
-                              NSLog(@"Error fetching pocemons images");
-                          }
-                      }
-
-                    [self asyncLoadImages:arrayOfURLStrings :^(NSMutableArray *result) {
+                    [self asyncLoadImages:[ModelBuilder buildPocemonsImagesModel:url] :^(NSMutableArray *result) {
                         [arrayOfImages addObjectsFromArray:result];
                         completion(arrayOfImages);
-//                        if (arrayOfImages.count != 0) {
-//                            completion(arrayOfImages);
-//                        } else {
-//                            completion(false);
-//                        }
                     }];
                   }
     }];
     [task resume];
-
-    //return arrayOfImages;
 }
 
 +(void)asyncLoadImages:(NSMutableArray *)array :(void(^)(NSMutableArray *result))completion {

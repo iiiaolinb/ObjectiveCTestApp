@@ -11,7 +11,7 @@
 
 @interface TableViewController : UITableViewController <UISearchBarDelegate, TableVCPresenterOutput>
 
-@property (weak, nonatomic) IBOutlet UISearchBar * _Nullable searchBar;
+@property (strong, nonatomic) IBOutlet UISearchBar * _Nullable searchBar;
 @property (nonatomic, nullable) NSMutableArray * pocemons;
 @property (nonatomic, nullable) NSMutableArray * searchTag;
 

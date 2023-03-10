@@ -13,25 +13,18 @@
 @implementation TableVCPresenter
 
 @synthesize view;
-//@synthesize model;
 
 - (void)initWithView:(UITableViewController *)view {
     self.view = view;
 }
 
 - (void)createDataModel:(void(^_Nullable)(NSMutableArray  * _Nullable content))competion {
-//    TableVCModel *model;
-//    self.model = model;
     
     [TableVCModel createDataModel:^(NSMutableArray * _Nullable content) {
-        //model.content = content;
-        //NSLog(@"CONTENT - %lu", (unsigned long)model.content.count);
         dispatch_async(dispatch_get_main_queue(), ^{
             if (content.count != 0) {
-                //NSLog(@"CONTENT - %lu", (unsigned long)content.count);
                 [self.view.tableView reloadData];
             } else {
-                //NSLog(@"SHOW");
                 [self showAlertController:self.view];
             }
         });

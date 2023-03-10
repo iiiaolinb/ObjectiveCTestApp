@@ -10,6 +10,7 @@
 #import "ImageViewerVC.h"
 #import "URLHelper.h"
 #import "CollectionVCPresenter.h"
+#import "Carusel.h"
 
 @implementation CollectionViewController
 
@@ -18,6 +19,16 @@ static NSString * const reuseIdentifier = @"CollectionViewCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
+    self.collectionView.delegate = self;
+    
+    Carusel *layout = [[Carusel alloc] init];
+    layout.itemSize = CGSizeMake(CGRectGetWidth(self.collectionView.frame) / 1.5 ,
+                                 CGRectGetWidth(self.collectionView.frame) / 1.5);
+    layout.interItemSpace = 20;
+
+    self.collectionView.collectionViewLayout = layout;
     
     [self.activityIndicator startAnimating];
     self.activityIndicator.hidesWhenStopped = true;
@@ -73,15 +84,6 @@ static NSString * const reuseIdentifier = @"CollectionViewCell";
     }
     
     return cell;
-}
-
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(CGRectGetWidth(collectionView.frame) / 2 - 20, (CGRectGetWidth(collectionView.frame)) / 2 - 20);
-}
-
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(10, 10, 10, 10);
 }
 
 @end

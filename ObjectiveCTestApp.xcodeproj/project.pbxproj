@@ -22,6 +22,9 @@
 		7477729529B1DE7F001783A8 /* TableVCModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7477729429B1DE7F001783A8 /* TableVCModel.m */; };
 		7477729829B1DE99001783A8 /* CollectionVCPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7477729729B1DE99001783A8 /* CollectionVCPresenter.m */; };
 		7477729B29B1DEAB001783A8 /* CollectionVCModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7477729A29B1DEAB001783A8 /* CollectionVCModel.m */; };
+		747772BA29B9B696001783A8 /* Carusel.m in Sources */ = {isa = PBXBuildFile; fileRef = 747772B929B9B696001783A8 /* Carusel.m */; };
+		747772BD29B9B7C4001783A8 /* HorizontalProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 747772BC29B9B7C4001783A8 /* HorizontalProperties.m */; };
+		747772C129BB0A7C001783A8 /* ModelBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 747772C029BB0A7C001783A8 /* ModelBuilder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +60,13 @@
 		7477729F29B5BEFF001783A8 /* TableVCPresenterInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableVCPresenterInput.h; sourceTree = "<group>"; };
 		747772A029B5D2AC001783A8 /* CollectionVCPresenterOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionVCPresenterOutput.h; sourceTree = "<group>"; };
 		747772A129B5D2BD001783A8 /* CollectionVCPresenterInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionVCPresenterInput.h; sourceTree = "<group>"; };
+		747772B829B9B696001783A8 /* Carusel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Carusel.h; sourceTree = "<group>"; };
+		747772B929B9B696001783A8 /* Carusel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Carusel.m; sourceTree = "<group>"; };
+		747772BB29B9B7C4001783A8 /* HorizontalProperties.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HorizontalProperties.h; sourceTree = "<group>"; };
+		747772BC29B9B7C4001783A8 /* HorizontalProperties.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HorizontalProperties.m; sourceTree = "<group>"; };
+		747772BE29B9C69B001783A8 /* PropertiesProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PropertiesProtocol.h; sourceTree = "<group>"; };
+		747772BF29BB0A7C001783A8 /* ModelBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelBuilder.h; sourceTree = "<group>"; };
+		747772C029BB0A7C001783A8 /* ModelBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModelBuilder.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +83,7 @@
 		744D6EAC2982B99900D7DC6C /* CollectionVC */ = {
 			isa = PBXGroup;
 			children = (
+				747772B729B9B65A001783A8 /* CollectionViewLayout */,
 				744D6EAE2982BB3000D7DC6C /* CollectionViewCell */,
 				744D6EA92982B98300D7DC6C /* CollectionViewController.h */,
 				744D6EAA2982B98300D7DC6C /* CollectionViewController.m */,
@@ -155,11 +166,25 @@
 			path = ObjectiveCTestApp;
 			sourceTree = "<group>";
 		};
+		747772B729B9B65A001783A8 /* CollectionViewLayout */ = {
+			isa = PBXGroup;
+			children = (
+				747772B829B9B696001783A8 /* Carusel.h */,
+				747772B929B9B696001783A8 /* Carusel.m */,
+				747772BB29B9B7C4001783A8 /* HorizontalProperties.h */,
+				747772BC29B9B7C4001783A8 /* HorizontalProperties.m */,
+				747772BE29B9C69B001783A8 /* PropertiesProtocol.h */,
+			);
+			path = CollectionViewLayout;
+			sourceTree = "<group>";
+		};
 		74FF86742993CD8B00914548 /* URLHelper */ = {
 			isa = PBXGroup;
 			children = (
 				744D6EBC2983C71900D7DC6C /* URLHelper.h */,
 				744D6EBD2983C71A00D7DC6C /* URLHelper.m */,
+				747772BF29BB0A7C001783A8 /* ModelBuilder.h */,
+				747772C029BB0A7C001783A8 /* ModelBuilder.m */,
 			);
 			path = URLHelper;
 			sourceTree = "<group>";
@@ -237,6 +262,8 @@
 				744D6EB12982BB5200D7DC6C /* CollectionViewCell.m in Sources */,
 				7477729529B1DE7F001783A8 /* TableVCModel.m in Sources */,
 				7477729829B1DE99001783A8 /* CollectionVCPresenter.m in Sources */,
+				747772BA29B9B696001783A8 /* Carusel.m in Sources */,
+				747772C129BB0A7C001783A8 /* ModelBuilder.m in Sources */,
 				7467CD4829826EA100FFB61F /* AppDelegate.m in Sources */,
 				7467CD5929826EA900FFB61F /* main.m in Sources */,
 				744D6EBE2983C71A00D7DC6C /* URLHelper.m in Sources */,
@@ -245,6 +272,7 @@
 				7477729B29B1DEAB001783A8 /* CollectionVCModel.m in Sources */,
 				744D6EAB2982B98300D7DC6C /* CollectionViewController.m in Sources */,
 				7467CD4B29826EA100FFB61F /* SceneDelegate.m in Sources */,
+				747772BD29B9B7C4001783A8 /* HorizontalProperties.m in Sources */,
 				7477729229B1DE5E001783A8 /* TableVCPresenter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

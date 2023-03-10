@@ -14,6 +14,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 50)];
     self.searchBar.delegate = self;
     
     self.presenter = [[TableVCPresenter alloc] init];
@@ -61,8 +63,19 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TableViewCell" forIndexPath:indexPath];
     cell.textLabel.text = self.searchTag[indexPath.row];
-
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 50.0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    
+    UIView *header = [[UIView alloc] init];
+    header.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    [header addSubview:self.searchBar];
+    return header;
 }
 
 #pragma mark - Navigation
