@@ -6,149 +6,128 @@
 //
 
 #import "Carusel.h"
-#import "HorizontalProperties.h"
-#import "PropertiesProtocol.h"
 
 @interface Carusel ()
 
-@property(nonatomic, strong) NSIndexPath *indexPathForCenteredItem;
-
-@property(nonatomic, strong) id <PropertiesProtocol> properties;
+@property(nonatomic) CGFloat scaleOffset;
+@property(nonatomic) CGFloat scaleFactor;
+@property(nonatomic) CGFloat alphaFactor;
+@property(nonatomic) CGFloat lineSpacing;
+@property(nonatomic) CGFloat rotationAngle;
 
 @end
 
 @implementation Carusel
 
-#pragma mark - Preparing Layout
-
-- (void)prepareLayout {
-    [super prepareLayout];
-
-    self.properties = [[HorizontalProperties alloc] initWithLayout:self];
-}
-
-- (CGSize)collectionViewContentSize {
-    return self.properties.contentRect.size;
+- (instancetype)init
+{
+    self.scaleOffset = 200;
+    self.scaleFactor = 0.5;
+    self.alphaFactor = 0.5;
+    self.lineSpacing = 15;
+    self.rotationAngle = 0.5 * M_PI;
+    
+    self = [super init];
+    if (self) {
+        self.minimumLineSpacing = self.lineSpacing;
+    }
+    return self;
 }
 
 #pragma mark - Attributes
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
-    CGFloat combinedItemWidth = self.itemSize.width + self.interItemSpace;
 
-    CGFloat minimalXPosition = CGRectGetMinX(rect) - self.properties.contentStart;
-    CGFloat maximalXPosition = CGRectGetMaxX(rect) - self.properties.contentStart;
+    NSArray *superAttributes = [super layoutAttributesForElementsInRect:rect];
+    
+    CGPoint contentOffset = self.collectionView.contentOffset;
+    CGSize size = self.collectionView.bounds.size;
+    
+    CGRect visibleRect = CGRectMake(contentOffset.x, contentOffset.y, size.width, size.height);
+    CGFloat visibleCenterX = CGRectGetMidX(visibleRect);
+    
+    NSMutableArray *newAttributesArray = [[NSMutableArray alloc] initWithArray:superAttributes copyItems:TRUE];
+    
+        //set up base transform
+    CATransform3D transform = CATransform3DIdentity;
+    transform.m34 = -1.0/500.0;
+    transform = CATransform3DTranslate(transform, -CGSizeZero.width, -CGSizeZero.height, 0.0);
+    
+    for (UICollectionViewLayoutAttributes *attribute in newAttributesArray) {
+    
+        CGFloat distanceFromCenter = visibleCenterX - attribute.center.x;
+        CGFloat absDistanceFromCenter = fmin(fabs(distanceFromCenter), self.scaleOffset);
 
-    CGFloat firstVisibleItem = floorf(minimalXPosition / combinedItemWidth);
-    CGFloat lastVisibleItem = ceilf(maximalXPosition / combinedItemWidth);
+        CGFloat scale = (absDistanceFromCenter * (self.scaleFactor - 1)) / self.scaleOffset + 1;
+        CGFloat rotate = (distanceFromCenter * self.rotationAngle) / self.scaleOffset;
+        CGFloat alpha = absDistanceFromCenter * (self.alphaFactor - 1) / self.scaleOffset + 1;
 
-    if (firstVisibleItem < 0) {
-        firstVisibleItem = 0;
+        transform = CATransform3DTranslate(transform, 0, 0, 0);
+        attribute.transform3D = CATransform3DConcat(CATransform3DScale(transform, 1.5 * scale, 1.5 * scale, 1),
+                                                    CATransform3DRotate(transform, rotate, 0, 1, 0));
+        attribute.alpha = alpha;
     }
-
-    if (lastVisibleItem > [[self collectionView] numberOfItemsInSection:0]) {
-        lastVisibleItem = [[self collectionView] numberOfItemsInSection:0];
-    }
-
-    NSMutableArray *layoutAttributes = [NSMutableArray array];
-
-    for (NSInteger j = (NSInteger) firstVisibleItem; j < lastVisibleItem; j++) {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:j inSection:0];
-        [layoutAttributes addObject:[self layoutAttributesForItemAtIndexPath:indexPath]];
-    }
-
-    return layoutAttributes;
-}
-
-- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewLayoutAttributes *attributes = [[[self class] layoutAttributesClass] layoutAttributesForCellWithIndexPath:indexPath];
-
-    CGRect bounds = CGRectZero;
-    bounds.size = self.itemSize;
-
-    attributes.bounds = bounds;
-    attributes.center = [self.properties centerForItemAtIndexPath:indexPath];
-
-    return attributes;
+    
+    return newAttributesArray;
 }
 
 #pragma mark - Target Content Offset
 
 - (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity {
     
-    CGPoint targetContentOffset = proposedContentOffset;
-    UICollectionViewLayoutAttributes *layoutAttributesForItemToCenterOn = [self layoutAttributesForUserFingerMovingWithVelocity:velocity proposedContentOffset:proposedContentOffset];
-
-    if (layoutAttributesForItemToCenterOn) {
-        targetContentOffset.x = layoutAttributesForItemToCenterOn.center.x - self.collectionView.bounds.size.width / 2;
-        targetContentOffset.y = 0;
-        self.indexPathForCenteredItem = layoutAttributesForItemToCenterOn.indexPath;
-    }
-
-    return targetContentOffset;
-}
-
-- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset {
-    UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForItemAtIndexPath:self.indexPathForCenteredItem];
-    CGPoint targetContentOffset = proposedContentOffset;
-
-    if (attributes) {
-        targetContentOffset.x = attributes.center.x - self.collectionView.bounds.size.width / 2;
-        targetContentOffset.y = 0;
-    }
-
-    return targetContentOffset;
-}
-
-#pragma mark - Helpers
-
-- (UICollectionViewLayoutAttributes *)layoutAttributesForUserFingerMovingWithVelocity:(CGPoint)velocity proposedContentOffset:(CGPoint)offset {
+    CGRect proposedRect = CGRectMake(proposedContentOffset.x, 0, self.collectionView.bounds.size.width, self.collectionView.bounds.size.height);
     
-    UICollectionViewLayoutAttributes *layoutAttributesForItemToCenterOn = nil;
-    CGRect nextVisibleBounds = [self collectionView].bounds;
-    nextVisibleBounds.origin = offset;
-
-    NSPredicate *itemsPredicate = [NSPredicate predicateWithFormat:@"representedElementCategory == %d",
-                                                                   UICollectionElementCategoryCell];
-    NSArray *layoutAttributesInRect = [[self layoutAttributesForElementsInRect:nextVisibleBounds] filteredArrayUsingPredicate:itemsPredicate];
-
-    if (velocity.x > 0.0f) {
-        layoutAttributesForItemToCenterOn = [layoutAttributesInRect lastObject];
-    }
-    else if (velocity.x < 0.0f) {
-        layoutAttributesForItemToCenterOn = [layoutAttributesInRect firstObject];
-    }
-    else {
-        CGFloat distanceToCenter = CGFLOAT_MAX;
-
-        for (UICollectionViewLayoutAttributes *attributes in layoutAttributesInRect) {
-            CGFloat midOfFrame = CGRectGetMidX(self.collectionView.frame);
-            CGFloat center = self.collectionView.contentOffset.x + midOfFrame;
-
-            CGFloat distance = ABS(center - attributes.center.x);
-
-            if (distance < distanceToCenter) {
-                distanceToCenter = distance;
-                layoutAttributesForItemToCenterOn = attributes;
-            }
+    NSArray *layoutAttributes = [self layoutAttributesForElementsInRect:proposedRect];
+    
+    UICollectionViewLayoutAttributes *candidateAttributes;
+    CGFloat proposedContentOffsetCenterX = proposedContentOffset.x + self.collectionView.bounds.size.width / 2;
+    
+    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
+        if (attributes.representedElementCategory != UICollectionElementCategoryCell) {
+            continue;
+        }
+        
+        if (candidateAttributes == nil) {
+            candidateAttributes = attributes;
+            continue;
+        }
+        
+        if (fabs(attributes.center.x - proposedContentOffsetCenterX) < fabs(candidateAttributes.center.x - proposedContentOffsetCenterX)) {
+            candidateAttributes = attributes;
         }
     }
+    
+    UICollectionViewLayoutAttributes *aCandidateAttributes = candidateAttributes;
+    CGFloat newOffsetX = aCandidateAttributes.center.x - self.collectionView.bounds.size.width / 2;
+    CGFloat offset = newOffsetX - self.collectionView.contentOffset.x;
+    
+    if ((velocity.x < 0 && offset > 0) || (velocity.x > 0 && offset < 0)) {
+        CGFloat pageWidth = self.itemSize.width + self.minimumLineSpacing;
+        newOffsetX += velocity.x > 0 ? pageWidth : -pageWidth;
+    }
+    
+    return CGPointMake(newOffsetX, proposedContentOffset.y);
+}
 
-    return layoutAttributesForItemToCenterOn;
+#pragma mark - Config Content Insets
+
+- (void) configureContentInset {
+    CGFloat inset = self.collectionView.bounds.size.width / 2 - self.itemSize.width / 2;
+    self.collectionView.contentInset = UIEdgeInsetsMake(0, inset, 0, inset);
+    self.collectionView.contentOffset = CGPointMake(-inset, 0);
 }
 
 #pragma mark - Invalidating Layout
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
-    return !CGSizeEqualToSize(self.collectionView.bounds.size, newBounds.size);
+    return TRUE;
 }
 
-#pragma mark - Overridden Setters
-
-- (void)setItemSize:(CGSize)itemSize {
-    if (!CGSizeEqualToSize(_itemSize, itemSize)) {
-        _itemSize = itemSize;
-        [self invalidateLayout];
+- (void)invalidateLayoutWithContext:(UICollectionViewLayoutInvalidationContext *)context {
+    [super invalidateLayoutWithContext:context];
+    if ((self.collectionView.bounds.size.width != self.lastCollectionViewSize.width) && (self.collectionView.bounds.size.height != self.lastCollectionViewSize.height)) {
+        [self configureContentInset];
+        self.lastCollectionViewSize = self.collectionView.bounds.size;
     }
 }
 

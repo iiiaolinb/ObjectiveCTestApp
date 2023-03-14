@@ -8,9 +8,10 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@interface Carusel : UICollectionViewLayout
+@interface Carusel : UICollectionViewFlowLayout
 
-@property(nonatomic) CGSize itemSize IBInspectable;
 @property(nonatomic) CGFloat interItemSpace IBInspectable;
+
+@property(nonatomic, assign) CGSize lastCollectionViewSize;
 
 @end
